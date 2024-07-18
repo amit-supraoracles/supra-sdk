@@ -27,7 +27,7 @@ export class SupraClient {
   maxRetryForTransactionCompletion = 60;
   delayBetweenPoolingRequest = 1000; // 1 Second
 
-  constructor(url: string, chainId: number = Number(3)) {
+  constructor(url: string, chainId: number = Number(5)) {
     this.supraNodeURL = url;
     this.chainId = new TxnBuilderTypes.ChainId(chainId);
   }
@@ -434,7 +434,7 @@ export class SupraClient {
     // Along With This As Per Our Assumption Expected Gas Usage For Coin Transfer Will Be 1009 When Receiver Account Not Exists,
     // But Despite That We Will Set maxGas Value As 1020 For That Type Of Transaction.
     
-    const senderPublicKey = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
+    const senderPublicKey = senderAccount.address().toString();
     let senderAddressHex = new aptos.HexString(senderPublicKey);
     
     if (
