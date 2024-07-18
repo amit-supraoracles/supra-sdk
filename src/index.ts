@@ -27,7 +27,7 @@ export class SupraClient {
   maxRetryForTransactionCompletion = 60;
   delayBetweenPoolingRequest = 1000; // 1 Second
 
-  constructor(url: string, chainId: number = Number(5)) {
+  constructor(url: string, chainId: number = Number(3)) {
     this.supraNodeURL = url;
     this.chainId = new TxnBuilderTypes.ChainId(chainId);
   }
@@ -341,7 +341,7 @@ export class SupraClient {
     senderAccount: AptosAccount,
     rawTxn: TxnBuilderTypes.RawTransaction
   ): Promise<SendTxPayload> {
-    console.log("Sequence Number: ", rawTxn.sequence_number);
+    console.log("Sequence Number: ", rawTxn.sequence_number.toString());
 
     let txPayload = (
       rawTxn.payload as TxnBuilderTypes.TransactionPayloadEntryFunction
@@ -437,7 +437,6 @@ export class SupraClient {
     const senderPublicKey = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
     let senderAddressHex = new aptos.HexString(senderPublicKey);
     
-    
     if (
       amount + maxGas * BigInt(100) >
       (await this.getAccountSupraCoinBalance(senderAddressHex))
@@ -459,6 +458,7 @@ export class SupraClient {
     console.log("\n--------------------------------------------------")
     console.log(JSON.stringify(sendTxPayload));
     console.log("--------------------------------------------------")
+    console.log("\n\n")
     
     // await this.simulateTx(sendTxPayload);
     // return await this.sendTx(sendTxPayload);

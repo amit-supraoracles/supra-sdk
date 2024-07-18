@@ -15,21 +15,24 @@ const receiverAddress = process.env.RECEIVER_ADDRESS;
   let senderAccount = new aptos.AptosAccount(
     Buffer.from(`${senderSecretKey}`, "hex"));
 
-  const senderPublicKeyHex = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
-  let senderAddress = new aptos.HexString(senderPublicKeyHex);
+  const senderAccountAddress = senderAccount.address().toString()
+
+  let senderAccountAddressHex = new aptos.HexString(`${senderAccountAddress}`);
+
   let receiverAddressHex = new aptos.HexString(`${receiverAddress}`);
 
+  let resultSenderAccountExist = await supraClient.isAccountExists(senderAccountAddressHex)
   let resultReceiverAccountExist = await supraClient.isAccountExists(receiverAddressHex)
 
-  let senderBalance = await supraClient.getAccountSupraCoinBalance(senderAddress)
+  let senderBalance = await supraClient.getAccountSupraCoinBalance(senderAccount.address())
   let receiverBalance =  await supraClient.getAccountSupraCoinBalance(receiverAddressHex)
   
-  console.log("\nReceiver Account Exists: ", resultReceiverAccountExist);
-  console.log("Sender Address", senderAddress.toString());
-  console.log("Receiver Address", receiverAddressHex.toString());
 
-  console.log("\nSender Balance  : ", senderBalance);
-  console.log("Receiver Balance: ", receiverBalance);
+  console.log("\nSender Address   | IsAccountExist ", senderAccountAddressHex.toString(), resultSenderAccountExist);
+  console.log("Receiver Address | IsAccountExist ", receiverAddressHex.toString(), resultReceiverAccountExist);
+
+  console.log("\nSender Balance  : ", senderBalance.toString());
+  console.log("Receiver Balance: ", receiverBalance.toString());
   console.log("\n");
   
 })();
