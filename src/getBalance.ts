@@ -5,29 +5,29 @@ import * as aptos from "aptos";
 import * as supraSDK from "./index";
 
 
-const sender_privateKey = process.env.SENDER_PRIVATE_KEY;
-const receiver_publicKey = process.env.RECEIVER_PUBLIC_KEY;
+const senderSecretKey = process.env.SENDER_SECRET_KEY;
+const receiverAddress = process.env.RECEIVER_ADDRESS;
+
 
 (async () => {
   let supraClient = await supraSDK.SupraClient.init(`${process.env.SUPRA_DEVNET_RPC}`);
 
   let senderAccount = new aptos.AptosAccount(
-    Buffer.from(`${sender_privateKey}`, "hex"));
+    Buffer.from(`${senderSecretKey}`, "hex"));
 
-  const SenderPublicKeyHex = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
-  let senderAddress = new aptos.HexString(SenderPublicKeyHex);
-  let receiverAddress = new aptos.HexString(`${receiver_publicKey}`);
+  const senderPublicKeyHex = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
+  let senderAddress = new aptos.HexString(senderPublicKeyHex);
+  let receiverAddressHex = new aptos.HexString(`${receiverAddress}`);
 
-  let resultReceiverAccountExist = await supraClient.isAccountExists(receiverAddress)
-
-  console.log("\nReceiver Account Exists: ", resultReceiverAccountExist);
-  console.log("Sender Address", senderAddress.toString());
-  console.log("Receiver Address", receiverAddress.toString());
-  
+  let resultReceiverAccountExist = await supraClient.isAccountExists(receiverAddressHex)
 
   let senderBalance = await supraClient.getAccountSupraCoinBalance(senderAddress)
-  let receiverBalance =  await supraClient.getAccountSupraCoinBalance(receiverAddress)
+  let receiverBalance =  await supraClient.getAccountSupraCoinBalance(receiverAddressHex)
   
+  console.log("\nReceiver Account Exists: ", resultReceiverAccountExist);
+  console.log("Sender Address", senderAddress.toString());
+  console.log("Receiver Address", receiverAddressHex.toString());
+
   console.log("\nSender Balance  : ", senderBalance);
   console.log("Receiver Balance: ", receiverBalance);
   console.log("\n");

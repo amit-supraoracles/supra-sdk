@@ -16,11 +16,10 @@ import {
   AccountResources,
 } from "./types";
 
+import * as aptos from "aptos";
 export * from "./types";
 
-/**
- * Provides methods for interacting with supra rpc node.
- */
+
 export class SupraClient {
   supraNodeURL: string;
   chainId: TxnBuilderTypes.ChainId;
@@ -41,6 +40,7 @@ export class SupraClient {
   static async init(url: string): Promise<SupraClient> {
     let supraClient = new SupraClient(url);
     supraClient.chainId = await supraClient.getChainId();
+    
     return supraClient;
   }
 
@@ -433,16 +433,21 @@ export class SupraClient {
     // As Per Our Assumption The Gas Usage For Coin Transfer Will Be 6 When Receiver Account Exists But Despite Of That We Will Set maxGas Value As 10.
     // Along With This As Per Our Assumption Expected Gas Usage For Coin Transfer Will Be 1009 When Receiver Account Not Exists,
     // But Despite That We Will Set maxGas Value As 1020 For That Type Of Transaction.
+    
+    const senderPublicKey = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
+    let senderAddressHex = new aptos.HexString(senderPublicKey);
+    
+    
     if (
       amount + maxGas * BigInt(100) >
-      (await this.getAccountSupraCoinBalance(senderAccount.address()))
+      (await this.getAccountSupraCoinBalance(senderAddressHex))
     ) {
       throw new Error("Insufficient Supra Coins");
     }
     let sendTxPayload = await this.getSendTxPayload(
       senderAccount,
       await this.getTxObject(
-        senderAccount.address(),
+        senderAddressHex,
         "0000000000000000000000000000000000000000000000000000000000000001",
         "aptos_account",
         "transfer",

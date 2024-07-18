@@ -4,6 +4,7 @@ import { Ed25519PrivateKey} from '@aptos-labs/ts-sdk';
 
 const privateKey = Ed25519PrivateKey.generate();
 const publicKey = privateKey.publicKey();
-console.log("Private", privateKey.toString() );
-console.log("Public", publicKey.toString());
 
+console.log("\nAccount Address :", publicKey.toString());
+console.log("Secret Key:",privateKey.toString());
+console.log("");

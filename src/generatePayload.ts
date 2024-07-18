@@ -4,43 +4,50 @@ import * as aptos from "aptos";
 import * as supraSDK from "./index";
 
 
-const sender_privateKey = process.env.SENDER_PRIVATE_KEY;
-const receiver_publicKey = process.env.RECEIVER_PUBLIC_KEY;
+const senderSecretKey = process.env.SENDER_SECRET_KEY;
+const receiverAddress = process.env.RECEIVER_ADDRESS;
 
 (async () => {
+  
   let supraClient = await supraSDK.SupraClient.init(`${process.env.SUPRA_DEVNET_RPC}`);
 
   let senderAccount = new aptos.AptosAccount(
-    Buffer.from(`${sender_privateKey}`,"hex"));
+    Buffer.from(`${senderSecretKey}`,"hex"));
 
+  
+  let receiverAddressHex = new aptos.HexString(`${receiverAddress}`);
+  let resultReceiverAccountExist= await supraClient.isAccountExists(receiverAddressHex)
+  let resultSenderAccountExist= await supraClient.isAccountExists(receiverAddressHex)
 
-  if ((await supraClient.isAccountExists(senderAccount.address())) == false) {
-    console.log(
-      "Funding Sender With Faucet: ",
-      // To Fund Account With Test Supra Tokens
-      // await supraClient.fundAccountWithFaucet(senderAccount.address())
-    );
+  const senderPublicKey = Buffer.from(senderAccount.signingKey.publicKey).toString("hex");
+  let senderAddressHex = new aptos.HexString(senderPublicKey);
+
+  if (resultSenderAccountExist == false) {
+    console.log("This account is not created yet, please get some faucet and try again!!")
+    console.log(senderAccount.address())
   }
 
-  let receiverAddress = new aptos.HexString(`${receiver_publicKey}`);
-
-  let resultReceiverAccountExist= await supraClient.isAccountExists(receiverAddress)
-
-  console.log("Sender", senderAccount.address().toString());
   console.log("\n-----------------------------------------------------");
-  console.log("Receiver", receiverAddress.toString());
+  console.log("Sender", senderAddressHex.toString());
+  console.log("Sender Account Exists: ", resultSenderAccountExist);
+  console.log("-----------------------------------------------------");
+
+  console.log("\n-----------------------------------------------------");
+  console.log("Receiver", receiverAddressHex.toString());
   console.log("Receiver Account Exists: ", resultReceiverAccountExist);
   console.log("-----------------------------------------------------");
   
   
-  let senderBalance = await supraClient.getAccountSupraCoinBalance(senderAccount.address());
-  console.log("\nSender Balance ", senderBalance);
+  let senderBalance = await supraClient.getAccountSupraCoinBalance(senderAddressHex);
+  let receiverBalance = await supraClient.getAccountSupraCoinBalance(receiverAddressHex);
+  console.log("\nSender Balance ", senderBalance.toString());
+  console.log("Receiver Balance ", receiverBalance.toString());
   
   // To Transfer Supra Coin From Sender To Receiver
   let txResData = await supraClient.transferSupraCoinPayload(
     senderAccount,
-    receiverAddress,
-    BigInt(100000000)
+    receiverAddressHex,
+    BigInt(1000)
   );
  
 })();
