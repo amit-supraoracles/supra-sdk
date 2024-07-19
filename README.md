@@ -1,6 +1,6 @@
 # supra-sdk
 
-The supra-l1-sdk provides a convenient way to interact with the supra chain and perform operations on supra chain.
+The supra-sdk provides a convenient way to interact with the supra chain and perform operations on supra chain.
 
 **NOTE:** This `sdk` utilizes [aptos-sdk](https://aptos-labs.github.io/ts-sdk-doc/) and expects few things such as `keyPair` of `aptos-sdk` type, so due to this you also have to add `aptos-sdk` in your project.
 
