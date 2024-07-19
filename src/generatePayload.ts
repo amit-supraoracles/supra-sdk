@@ -22,12 +22,10 @@ const receiverAddress = process.env.RECEIVER_ADDRESS;
 
   let senderBalance = await supraClient.getAccountSupraCoinBalance(senderAddressHex);
   let receiverBalance = await supraClient.getAccountSupraCoinBalance(receiverAddressHex);
-  
   console.log("\nSender   | IsAccountExist : ", senderAddressHex.toString(), resultSenderAccountExist);
   console.log("Receiver | IsAccountExist : ", receiverAddressHex.toString(), resultReceiverAccountExist);
   console.log("\nSender Balance : ", senderBalance.toString());
   console.log("Receiver Balance : ", receiverBalance.toString());
-  
   let txResData = await supraClient.transferSupraCoinPayload(
     senderAccount,
     receiverAddressHex,
