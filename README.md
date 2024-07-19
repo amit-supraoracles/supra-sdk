@@ -29,7 +29,7 @@ npx ts-node src/generatePayload.ts
 ```
 
 ## Important : Format for Address and Secret Key in .env
-- Ensure your address and secret **do not** include the `0x` prefix.
+- Ensure your address and secret key **do not** include the `0x` prefix.
 - Example
     - **Correct:**      `a1b2c3d4e5f67890123456789abcdef1234567890abcdef1234567890abcdef`
     - **Incorrect:** `0xa1b2c3d4e5f67890123456789abcdef1234567890abcdef1234567890abcdef`
